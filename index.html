@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown to PDF API Tester</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 400px;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: vertical;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 10px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .margin-inputs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .margin-inputs input {
+      width: 100%;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      min-width: 150px;
+      padding: 15px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .status.success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      display: block;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+      display: block;
+    }
+
+    .status.loading {
+      background: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+      display: block;
+    }
+
+    .examples {
+      margin-top: 15px;
+    }
+
+    .example-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      margin: 5px;
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .example-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .info-box {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 4px;
+    }
+
+    .info-box h3 {
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+
+    .info-box ul {
+      margin-left: 20px;
+    }
+
+    .info-box li {
+      margin: 5px 0;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📄 Markdown to PDF</h1>
+      <p>API Tester - 在浏览器中测试你的 PDF 生成服务</p>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <!-- Left Column: Markdown Input -->
+        <div>
+          <div class="form-group">
+            <label>📝 Markdown 内容</label>
+            <textarea id="markdown" placeholder="输入你的 Markdown 内容..."># 测试文档 / Test Document
+
+这是一个测试文档，用于演示 Markdown 到 PDF 的转换功能。
+
+## 数学公式测试
+
+### 行内公式
+爱因斯坦的质能方程：$E = mc^2$
+
+### 块级公式
+
+$$
+\int_{0}^{1} x^2 dx = \frac{1}{3}
+$$
+
+更复杂的公式：
+
+$$
+\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t}
+$$
+
+## 列表测试
+
+### 无序列表
+- 第一项
+- 第二项
+  - 子项 1
+  - 子项 2
+- 第三项
+
+### 有序列表
+1. 首先
+2. 然后
+3. 最后
+
+## 表格测试
+
+| 特性 | 状态 | 说明 |
+|------|------|------|
+| 数学公式 | ✅ | KaTeX 完美支持 |
+| 多语言 | ✅ | 中日韩俄等 |
+| 表格 | ✅ | GitHub 风格 |
+| 代码高亮 | ✅ | 各种语言 |
+
+## 代码测试
+
+```javascript
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+}
+
+greet('World');
+```
+
+```python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+```
+
+## 引用测试
+
+> "生活就像骑自行车，想保持平衡就得不断前进。"
+> 
+> — 阿尔伯特·爱因斯坦
+
+## 多语言测试
+
+**中文**: 你好世界！  
+**English**: Hello World!  
+**日本語**: こんにちは世界！  
+**한국어**: 안녕하세요 세계!  
+**Русский**: Привет мир!
+
+---
+
+**测试完成！** 🎉</textarea>
+            
+            <div class="examples">
+              <strong>快速示例：</strong><br>
+              <span class="example-btn" onclick="loadExample('basic')">基本示例</span>
+              <span class="example-btn" onclick="loadExample('math')">数学公式</span>
+              <span class="example-btn" onclick="loadExample('matrix')">矩阵运算</span>
+              <span class="example-btn" onclick="loadExample('multilang')">多语言</span>
+              <span class="example-btn" onclick="loadExample('table')">表格</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Options -->
+        <div>
+          <div class="form-group">
+            <label>📄 文件名</label>
+            <input type="text" id="filename" value="document.pdf" placeholder="输出文件名">
+          </div>
+
+          <div class="form-group">
+            <label>📐 页面格式</label>
+            <select id="pageFormat">
+              <option value="A4">A4</option>
+              <option value="Letter">Letter</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>📏 页边距</label>
+            <div class="margin-inputs">
+              <input type="text" id="marginTop" placeholder="上 (20mm)" value="20mm">
+              <input type="text" id="marginRight" placeholder="右 (15mm)" value="15mm">
+              <input type="text" id="marginBottom" placeholder="下 (20mm)" value="20mm">
+              <input type="text" id="marginLeft" placeholder="左 (15mm)" value="15mm">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>🌐 API 地址</label>
+            <input type="text" id="apiUrl" value="http://localhost:3000/convert" placeholder="API URL">
+          </div>
+
+          <div class="info-box">
+            <h3>💡 提示</h3>
+            <ul>
+              <li>支持 KaTeX 数学公式</li>
+              <li>支持中日韩俄阿等多语言</li>
+              <li>支持 GitHub Flavored Markdown</li>
+              <li>支持代码高亮和表格</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-primary" onclick="generatePDF()">
+          🚀 生成 PDF
+        </button>
+        <button class="btn-success" onclick="testHealthCheck()">
+          ❤️ 健康检查
+        </button>
+        <button class="btn-secondary" onclick="clearAll()">
+          🗑️ 清空
+        </button>
+      </div>
+
+      <div id="status" class="status"></div>
+    </div>
+  </div>
+
+  <script>
+    // 示例模板
+    const examples = {
+      basic: `# Hello World
+
+这是一个简单的测试文档。
+
+## 数学公式
+
+爱因斯坦质能方程：$E = mc^2$
+
+$$
+\\int_{0}^{1} x^2 dx = \\frac{1}{3}
+$$`,
+
+      math: `# 数学公式测试
+
+## 常用公式
+
+勾股定理：$a^2 + b^2 = c^2$
+
+欧拉公式：$e^{i\\pi} + 1 = 0$
+
+## 积分
+
+$$
+\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
+$$
+
+## 矩阵
+
+$$
+\\begin{bmatrix}
+a & b \\\\
+c & d
+\\end{bmatrix}
+\\begin{bmatrix}
+x \\\\
+y
+\\end{bmatrix}
+=
+\\begin{bmatrix}
+ax + by \\\\
+cx + dy
+\\end{bmatrix}
+$$
+
+## 求和
+
+$$
+\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}
+$$`,
+
+      multilang: `# 多语言测试
+
+## 中文
+你好世界！质能方程：$E = mc^2$
+
+## English
+Hello World! Newton's law: $F = ma$
+
+## 日本語
+こんにちは世界！オイラーの公式：$e^{i\\pi} + 1 = 0$
+
+## 한국어
+안녕하세요 세계! 피타고라스 정리：$a^2 + b^2 = c^2$
+
+## Русский
+Привет мир! Формула Эйлера：$e^{ix} = \\cos x + i\\sin x$
+
+## العربية
+مرحبا بالعالم!`,
+
+      matrix: `# 矩阵运算测试
+
+## 2x2 矩阵乘法
+
+$$
+\\begin{bmatrix}
+a & b \\\\
+c & d
+\\end{bmatrix}
+\\begin{bmatrix}
+x \\\\
+y
+\\end{bmatrix}
+=
+\\begin{bmatrix}
+ax + by \\\\
+cx + dy
+\\end{bmatrix}
+$$
+
+## 3x3 单位矩阵
+
+$$
+I_3 = \\begin{bmatrix}
+1 & 0 & 0 \\\\
+0 & 1 & 0 \\\\
+0 & 0 & 1
+\\end{bmatrix}
+$$
+
+## 矩阵转置
+
+$$
+A = \\begin{bmatrix}
+1 & 2 & 3 \\\\
+4 & 5 & 6
+\\end{bmatrix}
+\\quad
+A^T = \\begin{bmatrix}
+1 & 4 \\\\
+2 & 5 \\\\
+3 & 6
+\\end{bmatrix}
+$$
+
+## 行列式
+
+$$
+\\det\\begin{bmatrix}
+a & b \\\\
+c & d
+\\end{bmatrix}
+= ad - bc
+$$
+
+## 线性方程组
+
+$$
+\\begin{cases}
+2x + 3y = 5 \\\\
+4x - y = 7
+\\end{cases}
+\\quad \\Rightarrow \\quad
+\\begin{bmatrix}
+2 & 3 \\\\
+4 & -1
+\\end{bmatrix}
+\\begin{bmatrix}
+x \\\\
+y
+\\end{bmatrix}
+=
+\\begin{bmatrix}
+5 \\\\
+7
+\\end{bmatrix}
+$$
+
+## 特征值问题
+
+$$
+A\\mathbf{v} = \\lambda\\mathbf{v}
+\\quad \\text{其中} \\quad
+\\det(A - \\lambda I) = 0
+$$`,
+
+      table: `# 表格测试
+
+## 功能对比
+
+| 功能 | Puppeteer | pdfmake |
+|------|-----------|---------|
+| 数学公式 | ✅ 完美 | ⚠️ 困难 |
+| 多语言 | ✅ 内置 | ❌ 手动 |
+| 性能 | ⚡ 快速 | 🐌 较慢 |
+| 实现难度 | ✅ 简单 | ❌ 复杂 |
+
+## 测试数据
+
+| 编号 | 名称 | 公式 | 结果 |
+|------|------|------|------|
+| 1 | 勾股定理 | $a^2 + b^2 = c^2$ | ✅ |
+| 2 | 欧拉公式 | $e^{i\\pi} + 1 = 0$ | ✅ |
+| 3 | 质能方程 | $E = mc^2$ | ✅ |`
+    };
+
+    // 加载示例
+    function loadExample(type) {
+      document.getElementById('markdown').value = examples[type];
+      showStatus('success', `✅ 已加载"${type}"示例`);
+      setTimeout(() => hideStatus(), 2000);
+    }
+
+    // 生成 PDF
+    async function generatePDF() {
+      const markdown = document.getElementById('markdown').value;
+      const filename = document.getElementById('filename').value;
+      const pageFormat = document.getElementById('pageFormat').value;
+      const apiUrl = document.getElementById('apiUrl').value;
+
+      if (!markdown.trim()) {
+        showStatus('error', '❌ 请输入 Markdown 内容');
+        return;
+      }
+
+      const payload = {
+        markdown: markdown,
+        filename: filename,
+        options: {
+          pageFormat: pageFormat,
+          margin: {
+            top: document.getElementById('marginTop').value || '20mm',
+            right: document.getElementById('marginRight').value || '15mm',
+            bottom: document.getElementById('marginBottom').value || '20mm',
+            left: document.getElementById('marginLeft').value || '15mm'
+          }
+        }
+      };
+
+      try {
+        showStatus('loading', '🔄 正在生成 PDF，请稍候...');
+        
+        const startTime = Date.now();
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        const duration = Date.now() - startTime;
+        const contentLength = response.headers.get('Content-Length');
+        const generationTime = response.headers.get('X-Generation-Time') || `${duration}ms`;
+
+        // 调试信息
+        console.log('📊 PDF 数据调试:');
+        console.log('  Content-Length (header):', contentLength);
+        console.log('  Blob size:', blob.size);
+        console.log('  Blob type:', blob.type);
+        console.log('  Response headers:', [...response.headers.entries()]);
+
+        // 使用 Content-Length 作为准确大小
+        const actualSize = contentLength ? parseInt(contentLength) : blob.size;
+
+        // 下载文件
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showStatus('success', `✅ PDF 生成成功！\n📄 文件: ${filename}\n📊 大小: ${formatBytes(actualSize)} (后端: ${contentLength ? formatBytes(parseInt(contentLength)) : 'N/A'}, Blob: ${formatBytes(blob.size)})\n⏱️ 耗时: ${generationTime}`);
+      } catch (error) {
+        showStatus('error', `❌ 生成失败: ${error.message}`);
+        console.error('Error:', error);
+      }
+    }
+
+    // 健康检查
+    async function testHealthCheck() {
+      const apiUrl = document.getElementById('apiUrl').value;
+      const baseUrl = apiUrl.replace('/convert', '');
+      
+      try {
+        showStatus('loading', '🔄 检查服务器状态...');
+        
+        const response = await fetch(`${baseUrl}/health`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          showStatus('success', `✅ 服务器正常运行！\n📡 状态: ${data.status}\n🕐 时间: ${data.timestamp}`);
+        } else {
+          showStatus('error', '❌ 服务器返回错误');
+        }
+      } catch (error) {
+        showStatus('error', `❌ 无法连接到服务器: ${error.message}\n请确保服务器已启动 (npm run server)`);
+        console.error('Error:', error);
+      }
+    }
+
+    // 清空所有内容
+    function clearAll() {
+      if (confirm('确定要清空所有内容吗？')) {
+        document.getElementById('markdown').value = '';
+        hideStatus();
+      }
+    }
+
+    // 显示状态消息
+    function showStatus(type, message) {
+      const statusEl = document.getElementById('status');
+      statusEl.className = `status ${type}`;
+      statusEl.innerHTML = message.replace(/\n/g, '<br>');
+    }
+
+    // 隐藏状态消息
+    function hideStatus() {
+      const statusEl = document.getElementById('status');
+      statusEl.className = 'status';
+    }
+
+    // 格式化字节大小
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    // 页面加载时执行健康检查
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        testHealthCheck();
+      }, 500);
+    });
+  </script>
+</body>
+</html>
+

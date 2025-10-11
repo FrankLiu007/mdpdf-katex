@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.pdf
+*.log
+.env
+.DS_Store
+.vscode/
+.idea/
+quick-test-output.pdf
+output*.pdf
