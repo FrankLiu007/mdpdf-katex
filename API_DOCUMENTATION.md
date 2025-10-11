@@ -1,4 +1,4 @@
-# Markdown to PDF API Documentation
+# mdpdf-katex API Documentation
 
 High-performance API for converting Markdown to PDF with KaTeX math formulas and multilingual support.
 

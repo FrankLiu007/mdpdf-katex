@@ -1,4 +1,6 @@
-# Markdown to PDF with Puppeteer & KaTeX
+# mdpdf-katex
+
+> Markdown to PDF with Puppeteer & KaTeX
 
 Convert Markdown to beautiful PDFs with **perfect** math formula rendering and multilingual support.
 
@@ -12,11 +14,30 @@ Convert Markdown to beautiful PDFs with **perfect** math formula rendering and m
 - ✅ **Standard Web Tech**: HTML/CSS - simple and maintainable
 - ✅ **300MB is OK**: Server-side deployment, package size doesn't matter
 
-### Why Not pdfmake?
+### Why Not Browser-Based Solutions?
 
-- ❌ **Browser**: Font loading issues, difficult multilingual support
-- ❌ **Node.js**: Math formulas only work with SVG + MathJax (slow, poor quality)
-- ❌ **Complex**: Requires 1000+ lines of conversion code
+**❌ Option 1: pdfmake in Browser**
+- Complex font configuration required
+- Difficult multilingual support (need to bundle font files)
+- Poor math formula rendering (SVG + MathJax)
+- Large bundle size for frontend
+
+**❌ Option 2: Browser Print Dialog**
+- Generate HTML → User clicks "Print" → User selects "Save as PDF"
+- Poor UX: requires manual user interaction
+- Inconsistent results across browsers
+- No programmatic control
+
+**❌ Option 3: pdfmake in Node.js**
+- Math formulas only work with SVG + MathJax (slow, poor quality)
+- Requires 1000+ lines of conversion code
+- Complex implementation
+
+**✅ Our Solution: Puppeteer Server-Side**
+- One-click PDF generation via API
+- Perfect math formulas (KaTeX)
+- Zero user interaction needed
+- Consistent, high-quality output
 
 **For server-side APIs with math formulas and multilingual content, Puppeteer is the only sensible choice.**
 

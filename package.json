@@ -1,5 +1,5 @@
 {
-  "name": "markdown-to-pdf-puppeteer",
+  "name": "mdpdf-katex",
   "version": "1.0.0",
   "description": "Convert Markdown to PDF using Puppeteer with perfect KaTeX math formula rendering and multilingual support.",
   "type": "module",
