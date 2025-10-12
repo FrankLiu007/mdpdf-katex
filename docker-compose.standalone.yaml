@@ -1,0 +1,65 @@
+# ============================================
+# Standalone Docker Compose Configuration
+# ============================================
+#
+# Use this file to run the Markdown-to-PDF service
+# independently without any other services.
+#
+# Usage:
+#   docker-compose -f docker-compose.standalone.yaml up -d
+#
+# ============================================
+
+version: '3.8'
+
+services:
+  markdown-to-pdf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: markdown-to-pdf
+    
+    # Port mapping: host:container
+    ports:
+      - "3000:3000"
+    
+    # Environment variables (optional)
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    
+    # Resource limits (optional but recommended)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Security options (optional)
+    security_opt:
+      - no-new-privileges:true
+    
+    # Read-only root filesystem (optional)
+    # read_only: true
+    # tmpfs:
+    #   - /tmp
+
+# Optional: persistent logs
+# volumes:
+#   logs:
+#     driver: local
+
