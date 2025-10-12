@@ -17,7 +17,13 @@ app.use(express.text({ limit: '10mb' }));
 
 // 提供静态 HTML 测试页面
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  // 兼容开发模式和编译模式
+  // 开发模式：tsx server.ts → __dirname = /remark-pdf
+  // 编译模式：node dist/server.js → __dirname = /remark-pdf/dist
+  const indexPath = __dirname.endsWith('dist') 
+    ? path.resolve(__dirname, '../index.html')  // 编译模式：向上一级
+    : path.resolve(__dirname, 'index.html');     // 开发模式：当前目录
+  res.sendFile(indexPath);
 });
 
 // 健康检查

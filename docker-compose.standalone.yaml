@@ -20,8 +20,9 @@ services:
     container_name: markdown-to-pdf
     
     # Port mapping: host:container
+    # Change host port (3001) if 3000 is occupied, container always uses 3000
     ports:
-      - "3000:3000"
+      - "4000:3000"
     
     # Environment variables (optional)
     environment:

@@ -341,7 +341,7 @@ export async function markdownToPdfBuffer(
     });
 
     console.log(`✅ PDF buffer generated (${pdfBuffer.length} bytes)`);
-    return pdfBuffer;
+    return Buffer.from(pdfBuffer);
   } finally {
     await page.close();
   }

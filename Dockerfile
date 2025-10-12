@@ -51,18 +51,23 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 # Create app directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files and tsconfig
 COPY package*.json ./
+COPY tsconfig.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production && \
+# Install ALL dependencies (needed for TypeScript build)
+RUN npm ci && \
     npm cache clean --force
 
-# Copy application files
-COPY . .
+# Copy application source files
+COPY *.ts ./
+COPY index.html ./
 
-# Build TypeScript (if needed)
-# RUN npm run build
+# Build TypeScript to JavaScript
+RUN npm run build
+
+# Remove dev dependencies after build (keep production deps only)
+RUN npm prune --production
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -79,6 +84,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1);})"
 
-# Start server
+# Start server (use compiled JavaScript)
 CMD ["npm", "start"]
 
