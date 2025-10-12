@@ -45,8 +45,7 @@ RUN apk add --no-cache \
 # Configure Puppeteer to use system Chromium
 # This avoids downloading Chromium during npm install (saves ~300MB)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
-    NODE_ENV=production
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Create app directory
 WORKDIR /app
@@ -55,7 +54,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install ALL dependencies (needed for TypeScript build)
+# Install ALL dependencies (including devDependencies for build)
 RUN npm ci && \
     npm cache clean --force
 
@@ -68,6 +67,9 @@ RUN npm run build
 
 # Remove dev dependencies after build (keep production deps only)
 RUN npm prune --production
+
+# Set production environment after build
+ENV NODE_ENV=production
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
