@@ -40,7 +40,6 @@ LABEL version="1.0.0"
 # - font-noto-thai: Thai script
 # - font-noto-devanagari: Devanagari (Hindi, Sanskrit, etc.)
 # - font-noto-emoji: emoji support
-# - font-wqy-zenhei: additional Chinese font
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -54,7 +53,6 @@ RUN apk add --no-cache \
     font-noto-thai \
     font-noto-devanagari \
     font-noto-emoji \
-    font-wqy-zenhei \
     && rm -rf /var/cache/apk/*
 
 # Configure Puppeteer to use system Chromium

@@ -46,11 +46,6 @@ export async function markdownToPdfWithPuppeteer(
   <!-- KaTeX CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.23/dist/katex.min.css">
   
-  <!-- Google Fonts for multilingual support (fallback for non-Docker environments) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
-  
   <!-- Custom Styles -->
   <style>
     * {
@@ -60,11 +55,15 @@ export async function markdownToPdfWithPuppeteer(
     }
     
     body {
-      /* 优先使用系统 Noto 字体，支持全球主要语言（中日韩、阿拉伯、泰语、印地语等） */
-      font-family: 'Noto Serif', 'Noto Sans', 'Noto Sans CJK SC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 
-                   'Noto Sans Arabic', 'Noto Sans Thai', 'Noto Sans Devanagari', 'Noto Emoji',
-                   'Noto Sans SC', 'Noto Sans JP', 'Noto Sans KR', 'WenQuanYi Zen Hei',
-                   'Times New Roman', Times, serif;
+      /* 优先使用思源宋体（Noto Serif CJK）支持中日韩，提供优雅的衬线字体体验 */
+      /* 所有字体均已在 Docker 镜像中预装，无需网络加载 */
+      font-family: 'Noto Serif CJK SC', 'Noto Serif CJK TC', 'Noto Serif CJK JP', 'Noto Serif CJK KR',
+                   'Noto Sans CJK SC', 'Noto Sans CJK TC', 'Noto Sans CJK JP', 'Noto Sans CJK KR',
+                   'Noto Serif', 'Noto Sans',
+                   'DejaVu Serif', 'DejaVu Sans',
+                   'Noto Sans Arabic', 'Noto Sans Thai', 'Noto Sans Devanagari',
+                   'Noto Color Emoji', 'Noto Emoji',
+                   serif, sans-serif;
       font-size: 11pt;
       line-height: 1.6;
       color: #333;
@@ -118,7 +117,7 @@ export async function markdownToPdfWithPuppeteer(
     }
     
     code {
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Noto Sans Mono CJK SC', 'Courier New', Courier, monospace;
       background-color: #f8f9fa;
       padding: 2px 4px;
       border-radius: 3px;
