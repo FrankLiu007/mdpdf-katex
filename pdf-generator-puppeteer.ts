@@ -46,7 +46,7 @@ export async function markdownToPdfWithPuppeteer(
   <!-- KaTeX CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.23/dist/katex.min.css">
   
-  <!-- Google Fonts for multilingual support -->
+  <!-- Google Fonts for multilingual support (fallback for non-Docker environments) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
@@ -60,8 +60,11 @@ export async function markdownToPdfWithPuppeteer(
     }
     
     body {
-      /* 使用 Noto 字体家族支持全球语言 */
-      font-family: 'Noto Serif', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans KR', 'Times New Roman', Times, serif;
+      /* 优先使用系统 Noto 字体，支持全球主要语言（中日韩、阿拉伯、泰语、印地语等） */
+      font-family: 'Noto Serif', 'Noto Sans', 'Noto Sans CJK SC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 
+                   'Noto Sans Arabic', 'Noto Sans Thai', 'Noto Sans Devanagari', 'Noto Emoji',
+                   'Noto Sans SC', 'Noto Sans JP', 'Noto Sans KR', 'WenQuanYi Zen Hei',
+                   'Times New Roman', Times, serif;
       font-size: 11pt;
       line-height: 1.6;
       color: #333;

@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: markdown-to-pdf
+    container_name: md2pdf
     
     # Port mapping: host:container
     # Change host port (3001) if 3000 is occupied, container always uses 3000
@@ -54,13 +54,3 @@ services:
     security_opt:
       - no-new-privileges:true
     
-    # Read-only root filesystem (optional)
-    # read_only: true
-    # tmpfs:
-    #   - /tmp
-
-# Optional: persistent logs
-# volumes:
-#   logs:
-#     driver: local
-

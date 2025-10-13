@@ -32,7 +32,15 @@ LABEL version="1.0.0"
 # - chromium: for Puppeteer
 # - nss, freetype, harfbuzz: required libraries
 # - ca-certificates: for HTTPS
-# - ttf-dejavu: basic fonts (optional)
+# Fonts (comprehensive multilingual support):
+# - ttf-dejavu: basic Latin fonts
+# - font-noto: base Noto fonts (Latin, Greek, Cyrillic)
+# - font-noto-cjk: CJK (Chinese/Japanese/Korean)
+# - font-noto-arabic: Arabic script
+# - font-noto-thai: Thai script
+# - font-noto-devanagari: Devanagari (Hindi, Sanskrit, etc.)
+# - font-noto-emoji: emoji support
+# - font-wqy-zenhei: additional Chinese font
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -40,6 +48,13 @@ RUN apk add --no-cache \
     harfbuzz \
     ca-certificates \
     ttf-dejavu \
+    font-noto \
+    font-noto-cjk \
+    font-noto-arabic \
+    font-noto-thai \
+    font-noto-devanagari \
+    font-noto-emoji \
+    font-wqy-zenhei \
     && rm -rf /var/cache/apk/*
 
 # Configure Puppeteer to use system Chromium
