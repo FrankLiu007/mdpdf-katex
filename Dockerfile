@@ -17,7 +17,7 @@
 #
 # Usage:
 #   docker build -t markdown-to-pdf .
-#   docker run -d -p 3000:3000 --name md-to-pdf markdown-to-pdf
+#   docker run -d -p 3000:3000 --name md2pdf markdown-to-pdf
 #
 # ============================================
 

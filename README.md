@@ -1,45 +1,58 @@
-# mdpdf-katex
+# md2pdf-katex
 
-> Markdown to PDF with Puppeteer & KaTeX
+Markdown to PDF converter with perfect KaTeX math formula rendering and multilingual support.
 
-Convert Markdown to beautiful PDFs with **perfect** math formula rendering.
-
----
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Local Development
 
 ```bash
 npm install
-npm run server
+npm run build
+npm start
 ```
 
-Open http://localhost:3000 to test.
+Server runs on `http://localhost:3000`
 
-### Docker Deployment
+### Docker
 
 ```bash
-# Docker Compose (recommended)
-docker-compose -f docker-compose.standalone.yaml up -d
-
-# Test (port 4000 by default)
+docker compose up -d
 curl http://localhost:4000/health
 ```
 
----
+## Features
 
-## 📐 Features
+- Perfect KaTeX math formula rendering
+- Multilingual support (Chinese, Japanese, Korean, etc.)
+- GitHub Flavored Markdown
+- Syntax highlighting
+- RESTful API
 
-- ✅ Perfect KaTeX math formula rendering
-- ✅ Multilingual support (Chinese, Japanese, Korean, etc.)
-- ✅ GitHub Flavored Markdown
-- ✅ Syntax highlighting
-- ✅ RESTful API
+## Why Puppeteer?
 
----
+### Server-Side vs Client-Side
 
-## 🌐 API Usage
+**Server-Side (This Project) ✅**
+
+- ✅ **Perfect Quality**: Chromium rendering engine, pixel-perfect PDFs
+- ✅ **KaTeX Math**: Fast, accurate math formula rendering
+- ✅ **Multilingual**: Built-in Noto fonts (CJK, Arabic, etc.)
+- ✅ **Automated**: No user interaction required, perfect for APIs
+- ✅ **Consistent**: Same output regardless of user's browser
+- ✅ **Zero Config**: Works out of the box
+- ⚠️ **Resource Cost**: Requires server CPU/memory (~300MB package)
+
+**Client-Side Alternatives ❌**
+
+- ❌ **Browser Print Dialog**: Requires manual user action, not suitable for APIs
+- ❌ **pdfmake**: Complex font config, poor math rendering (SVG only)
+- ❌ **html2canvas**: Low quality (rasterized), large file size
+- ❌ **jsPDF**: Limited formatting, poor math support
+
+**Conclusion**: For server-side APIs, Puppeteer is the best choice. 300MB package size is acceptable for server environments where quality and automation matter more than bundle size.
+
+## API
 
 ### Health Check
 
@@ -47,7 +60,14 @@ curl http://localhost:4000/health
 curl http://localhost:3000/health
 ```
 
+Response:
+```json
+{"status":"ok","service":"markdown-to-pdf","timestamp":"..."}
+```
+
 ### Convert Markdown to PDF
+
+**POST /convert** (JSON)
 
 ```bash
 curl -X POST http://localhost:3000/convert \
@@ -56,149 +76,143 @@ curl -X POST http://localhost:3000/convert \
   -o output.pdf
 ```
 
-### Python Example
+**POST /convert-text** (Plain text)
 
+```bash
+curl -X POST http://localhost:3000/convert-text \
+  -H "Content-Type: text/plain" \
+  --data-binary @input.md \
+  -o output.pdf
+```
+
+**Request Body (JSON):**
+```json
+{
+  "markdown": "# Hello\n\n$E = mc^2$",
+  "options": {
+    "pageFormat": "A4",
+    "margin": {"top": "20mm", "right": "15mm", "bottom": "20mm", "left": "15mm"}
+  },
+  "filename": "output.pdf"
+}
+```
+
+### Examples
+
+**Python:**
 ```python
 import requests
 
 response = requests.post(
     "http://localhost:3000/convert",
-    json={"markdown": "# Test\n\n数学公式：$E = mc^2$"}
+    json={"markdown": "# Test\n\n$E = mc^2$"}
 )
-
 with open("output.pdf", "wb") as f:
     f.write(response.content)
 ```
 
----
-
-## 🎯 Why This Solution?
-
-**Perfect for Server-Side APIs**
-
-- ✅ **KaTeX Math**: Fast, accurate rendering
-- ✅ **Multilingual**: Built-in font support
-- ✅ **No Config**: Works out of the box
-- ✅ **Simple**: Standard web tech
-
-**Why Not Browser-Based?**
-
-- ❌ pdfmake: Complex font config, poor math rendering
-- ❌ Print Dialog: Manual user action required
-- ❌ html2canvas: Low quality, large file size
-
-**✅ Puppeteer**: Server-side, perfect quality, zero config
-
----
-
-## 📖 Examples
-
-### Inline Math
-
-```markdown
-Einstein's equation $E = mc^2$ changed physics.
+**JavaScript:**
+```javascript
+const response = await fetch('http://localhost:3000/convert', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({markdown: '# Test\n\n$E = mc^2$'})
+});
+const blob = await response.blob();
 ```
 
-### Display Math
+## Docker
 
+### Quick Start
+
+```bash
+docker compose up -d
+docker compose logs -f
+docker compose down
+```
+
+### Custom Port
+
+Edit `docker-compose.yaml`:
+```yaml
+ports:
+  - "127.0.0.1:8080:3000"  # host:container
+```
+
+### Docker Run
+
+```bash
+docker build -t markdown-to-pdf .
+docker run -d -p 4000:3000 --name md2pdf markdown-to-pdf
+docker logs -f md2pdf
+```
+
+### Security
+
+Service binds to `127.0.0.1` by default (localhost only). For production:
+- Use reverse proxy (nginx) with authentication
+- Or bind to internal network IP only
+- Never expose to public internet without auth
+
+## Build
+
+### Local Build
+
+```bash
+npm run build    # Compile TypeScript
+npm start        # Run compiled JS
+```
+
+### Docker Build
+
+```bash
+docker build -t markdown-to-pdf .
+```
+
+Build process:
+1. Install dependencies (including TypeScript)
+2. Compile TypeScript → JavaScript
+3. Remove dev dependencies
+4. Run production code
+
+## Markdown Features
+
+**Math Formulas:**
 ```markdown
+Inline: $E = mc^2$
+
+Display:
 $$
 \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
 $$
 ```
 
-### Multilingual
-
+**Multilingual:**
 ```markdown
 # 中文标题
-
 质能方程：$E = mc^2$
 
 ## 日本語
-
 オイラーの公式：$e^{i\pi} + 1 = 0$
 ```
 
----
+**Tables, Code Blocks, Syntax Highlighting** - All supported
 
-## 🐳 Docker
+## Troubleshooting
 
-### Quick Start
-
-```bash
-# Start service (port 4000)
-docker-compose -f docker-compose.standalone.yaml up -d
-
-# Check logs
-docker-compose -f docker-compose.standalone.yaml logs -f
-
-# Stop service
-docker-compose -f docker-compose.standalone.yaml down
-```
-
-### Custom Port
-
-Edit `docker-compose.standalone.yaml`:
-
+**Port conflict:**
 ```yaml
+# docker-compose.yaml
 ports:
-  - "8080:3000"  # Change host port
+  - "127.0.0.1:8080:3000"
 ```
 
-Or use `docker run`:
-
-```bash
-docker build -t markdown-to-pdf .
-docker run -d -p 8080:3000 markdown-to-pdf
-```
-
----
-
-## 📚 Documentation
-
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Build & deploy guide
-- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - API reference
-- **[DOCKER_USAGE.md](DOCKER_USAGE.md)** - Docker integration
-- **[QUICK_START.md](QUICK_START.md)** - Detailed tutorial
-
----
-
-## 🔧 Troubleshooting
-
-### Port Already in Use?
-
-Change port in `docker-compose.standalone.yaml`:
-
-```yaml
-ports:
-  - "4000:3000"  # Use different port
-```
-
-### Chromium Issues?
-
-Add shared memory:
-
+**Chromium issues:**
 ```yaml
 shm_size: '1gb'
 ```
 
-### High Memory Usage?
 
-Limit resources:
-
-```yaml
-deploy:
-  resources:
-    limits:
-      memory: 1G
-```
-
----
-
-## 📄 License
+## License
 
 MIT
-
----
-
-**Made with ❤️ for developers who need perfect PDFs with math formulas**
